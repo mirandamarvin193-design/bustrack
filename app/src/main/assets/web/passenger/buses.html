@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Todos los Buses - BusTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/passenger.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <a href="dashboard.html" class="brand-logo">
+      <div class="logo-icon">🚌</div>
+      <span>BusTrack</span>
+    </a>
+    <div class="d-flex align-center gap-2">
+      <a href="dashboard.html" class="btn btn-outline-primary btn-sm">Volver</a>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <div class="d-flex justify-between align-center mb-3">
+      <div>
+        <h2>Todos los Autobuses</h2>
+        <p class="text-muted">Organizados por Empresa y Ruta de transporte</p>
+      </div>
+    </div>
+
+    <!-- Buscador -->
+    <div class="form-group mb-3">
+      <input type="text" id="hierarchy-search" class="form-control" placeholder="🔍 Filtrar por empresa, ruta o número de bus...">
+    </div>
+
+    <!-- Contenedor de Grupos Jerárquicos (Empresa -> Ruta -> Bus) -->
+    <div id="hierarchy-container"></div>
+
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>Inicio</span>
+    </a>
+    <a href="map.html" class="nav-item">
+      <span class="nav-icon">🗺️</span>
+      <span>Mapa</span>
+    </a>
+    <a href="buses.html" class="nav-item active">
+      <span class="nav-icon">🚌</span>
+      <span>Buses</span>
+    </a>
+    <a href="schedules.html" class="nav-item">
+      <span class="nav-icon">🕐</span>
+      <span>Horarios</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = AuthService.requireAuth(['passenger', 'admin']);
+      if (!user) return;
+
+      renderHierarchy();
+
+      document.getElementById('hierarchy-search').addEventListener('input', (e) => {
+        renderHierarchy(e.target.value.toLowerCase().trim());
+      });
+    });
+
+    function renderHierarchy(filter = '') {
+      const container = document.getElementById('hierarchy-container');
+      const companies = StorageService.getCompanies();
+      const routes = StorageService.getRoutes();
+      const buses = StorageService.getBuses();
+
+      let html = '';
+
+      companies.forEach(company => {
+        const companyRoutes = routes.filter(r => r.companyId === company.id);
+
+        let routesHtml = '';
+
+        companyRoutes.forEach(route => {
+          const routeBuses = buses.filter(b => b.routeId === route.id);
+
+          // Filtrar si hay búsqueda
+          const matchingBuses = routeBuses.filter(b =>
+            !filter ||
+            company.name.toLowerCase().includes(filter) ||
+            route.name.toLowerCase().includes(filter) ||
+            b.busNumber.toLowerCase().includes(filter) ||
+            (b.plate && b.plate.toLowerCase().includes(filter))
+          );
+
+          if (filter && matchingBuses.length === 0 && !route.name.toLowerCase().includes(filter)) {
+            return; // Omitir si no coincide
+          }
+
+          routesHtml += `
+            <div class="route-subgroup">
+              <div class="route-title">
+                📍 Ruta: ${route.name} (${route.code})
+                <span class="text-muted" style="font-weight:normal; font-size:0.8rem; margin-left:8px;">
+                  ${route.startPoint} ➔ ${route.endPoint}
+                </span>
+              </div>
+
+              <div class="bus-mini-list">
+                ${(matchingBuses.length > 0 ? matchingBuses : routeBuses).map(bus => {
+                  let statusBadge = '<span class="badge badge-success">🟢 Circulando</span>';
+                  if (bus.isBrokenDown) statusBadge = '<span class="badge badge-danger">🔴 Averiado</span>';
+                  else if (bus.isFull) statusBadge = '<span class="badge badge-warning">🟡 Lleno</span>';
+                  else if (bus.status === 'inactive') statusBadge = '<span class="badge badge-muted">⚪ Inactivo</span>';
+
+                  return `
+                    <div class="bus-mini-item">
+                      <div>
+                        <strong>Bus #${bus.busNumber}</strong> (${bus.plate || 'Sin placa'})
+                        <span class="text-muted" style="margin-left: 10px;">👤 ${bus.driverName || 'Conductor'}</span>
+                      </div>
+                      <div class="d-flex align-center gap-2">
+                        <span style="font-size:0.8rem;">👥 ${bus.currentPassengers || 0}/${bus.capacity || 0}</span>
+                        ${statusBadge}
+                      </div>
+                    </div>
+                  `;
+                }).join('')}
+              </div>
+            </div>
+          `;
+        });
+
+        if (routesHtml) {
+          html += `
+            <div class="company-group">
+              <div class="company-header">
+                <span>🏢 ${company.name}</span>
+                <span class="badge badge-primary">${company.phone || 'Transporte'}</span>
+              </div>
+              ${routesHtml}
+            </div>
+          `;
+        }
+      });
+
+      if (!html) {
+        container.innerHTML = '<div class="card p-3 text-center text-muted">No se encontraron resultados para la búsqueda.</div>';
+      } else {
+        container.innerHTML = html;
+      }
+    }
+  </script>
+</body>
+</html>

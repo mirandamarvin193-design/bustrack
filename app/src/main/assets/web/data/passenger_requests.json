@@ -1,0 +1,29 @@
+[
+  {
+    "id": "REQ001",
+    "passengerId": "USR_PASAJERO1",
+    "passengerName": "Carlos Mendoza",
+    "busId": "BUS001",
+    "routeId": "RUT001",
+    "type": "board",
+    "lat": 8.4350,
+    "lng": -82.4345,
+    "locationDesc": "Frente a Farmacia Arrocha / Hospital",
+    "status": "active",
+    "createdAt": "2026-09-07T08:12:00Z"
+  },
+  {
+    "id": "REQ002",
+    "passengerId": "USR_PASAJERO2",
+    "passengerName": "María González",
+    "busId": "BUS001",
+    "routeId": "RUT001",
+    "type": "dropoff",
+    "lat": 8.4410,
+    "lng": -82.4380,
+    "stopId": "STP004",
+    "locationDesc": "Parada Centro Comercial Doleguita",
+    "status": "active",
+    "createdAt": "2026-09-07T08:14:00Z"
+  }
+]

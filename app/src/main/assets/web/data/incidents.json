@@ -1,0 +1,16 @@
+[
+  {
+    "id": "INC001",
+    "busId": "BUS005",
+    "busNumber": "005",
+    "companyId": "EMP003",
+    "driverId": null,
+    "type": "breakdown",
+    "description": "Falla mecánica en alternador y sistema eléctrico",
+    "lat": 8.5320,
+    "lng": -82.4325,
+    "reportedAt": "2026-09-07T07:45:00Z",
+    "resolvedAt": null,
+    "status": "active"
+  }
+]

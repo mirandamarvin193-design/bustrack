@@ -1,0 +1,75 @@
+[
+  {
+    "id": "USR_ADMIN",
+    "name": "Administrador",
+    "lastName": "General",
+    "email": "admin@bustrack.com",
+    "password": "admin",
+    "birthDate": "1990-01-01",
+    "role": "admin",
+    "phone": "+507 6100-0000"
+  },
+  {
+    "id": "USR_PASAJERO1",
+    "name": "Carlos",
+    "lastName": "Mendoza",
+    "email": "pasajero@bustrack.com",
+    "password": "123",
+    "birthDate": "1998-05-14",
+    "role": "passenger",
+    "city": "David",
+    "zone": "Barrio Bolívar",
+    "phone": "+507 6234-5678"
+  },
+  {
+    "id": "USR_PASAJERO2",
+    "name": "María",
+    "lastName": "González",
+    "email": "maria@bustrack.com",
+    "password": "123",
+    "birthDate": "2001-11-20",
+    "role": "passenger",
+    "city": "David",
+    "zone": "San Mateo",
+    "phone": "+507 6555-4321"
+  },
+  {
+    "id": "USR_COND1",
+    "name": "Roberto",
+    "lastName": "Pérez",
+    "email": "conductor@bustrack.com",
+    "password": "123",
+    "birthDate": "1985-03-22",
+    "role": "driver",
+    "companyId": "EMP001",
+    "busId": "BUS001",
+    "routeId": "RUT001",
+    "phone": "+507 6890-1234"
+  },
+  {
+    "id": "USR_COND2",
+    "name": "José",
+    "lastName": "Castillo",
+    "email": "jose@bustrack.com",
+    "password": "123",
+    "birthDate": "1982-08-10",
+    "role": "driver",
+    "companyId": "EMP001",
+    "busId": "BUS002",
+    "routeId": "RUT001",
+    "phone": "+507 6711-2233"
+  },
+  {
+    "id": "USR_COND3",
+    "name": "Manuel",
+    "lastName": "Sánchez",
+    "email": "manuel@bustrack.com",
+    "password": "123",
+    "birthDate": "1979-12-05",
+    "role": "driver",
+    "companyId": "EMP002",
+    "busId": "BUS003",
+    "routeId": "RUT002",
+    "phone": "+507 6999-8877"
+  }
+]

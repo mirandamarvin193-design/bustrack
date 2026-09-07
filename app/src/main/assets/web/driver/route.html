@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mi Ruta - Conductor BusTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/driver.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <a href="dashboard.html" class="brand-logo">
+      <div class="logo-icon">🚌</div>
+      <span>Mi Ruta Asignada</span>
+    </a>
+    <a href="dashboard.html" class="btn btn-outline-primary btn-sm">Volver</a>
+  </header>
+
+  <main class="app-container">
+    <div class="card p-3 mb-3">
+      <h2 id="route-display-title">Ruta</h2>
+      <p class="text-muted" id="route-company-title">Empresa</p>
+
+      <div class="detail-grid mt-3 mb-3">
+        <div><strong>Inicio:</strong> <span id="r-start">--</span></div>
+        <div><strong>Fin:</strong> <span id="r-end">--</span></div>
+        <div><strong>Horario:</strong> <span id="r-schedule">--</span></div>
+        <div><strong>Días:</strong> <span id="r-days">--</span></div>
+        <div><strong>Duración estimada:</strong> <span id="r-dur">--</span></div>
+        <div><strong>Código:</strong> <span id="r-code">--</span></div>
+      </div>
+
+      <h4 class="mt-3 mb-2">Paradas Oficiales en Secuencia</h4>
+      <div class="table-responsive">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>Parada</th>
+              <th>Tipo</th>
+              <th>Coordenadas</th>
+            </tr>
+          </thead>
+          <tbody id="driver-stops-table">
+            <!-- Rellenado con JS -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>Cabina</span>
+    </a>
+    <a href="route.html" class="nav-item active">
+      <span class="nav-icon">🗺️</span>
+      <span>Mi Ruta</span>
+    </a>
+    <a href="bus.html" class="nav-item">
+      <span class="nav-icon">🚌</span>
+      <span>Mi Bus</span>
+    </a>
+    <a href="schedule.html" class="nav-item">
+      <span class="nav-icon">🕐</span>
+      <span>Turno</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const driver = AuthService.requireAuth(['driver', 'admin']);
+      if (!driver) return;
+
+      const buses = StorageService.getBuses();
+      const bus = buses.find(b => b.driverId === driver.id) || buses[0];
+      if (!bus) return;
+
+      const route = StorageService.getRouteById(bus.routeId);
+      const company = StorageService.getCompanyById(bus.companyId);
+
+      if (route) {
+        document.getElementById('route-display-title').textContent = route.name;
+        document.getElementById('route-company-title').textContent = company ? company.name : 'Empresa';
+        document.getElementById('r-start').textContent = route.startPoint;
+        document.getElementById('r-end').textContent = route.endPoint;
+        document.getElementById('r-schedule').textContent = route.schedule;
+        document.getElementById('r-days').textContent = route.days;
+        document.getElementById('r-dur').textContent = route.estimatedDuration;
+        document.getElementById('r-code').textContent = route.code;
+
+        const stops = StorageService.getStopsByRoute(route.id);
+        const tbody = document.getElementById('driver-stops-table');
+        tbody.innerHTML = stops.map(s => `
+          <tr>
+            <td>#${s.sequence}</td>
+            <td><strong>🚏 ${s.name}</strong></td>
+            <td>${s.isTerminal ? '<span class="badge badge-info">Terminal</span>' : 'Regular'}</td>
+            <td><code>${s.lat.toFixed(4)}, ${s.lng.toFixed(4)}</code></td>
+          </tr>
+        `).join('');
+      }
+    });
+  </script>
+</body>
+</html>

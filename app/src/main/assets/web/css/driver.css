@@ -1,0 +1,115 @@
+/**
+ * BusTrack - driver.css
+ * Interfaz de cabina para el conductor (HUD, botones de gran tamaño, alertas e indicadores).
+ */
+
+.driver-cockpit-header {
+  background: #0F172A;
+  color: white;
+  padding: 20px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--shadow-md);
+}
+@media (min-width: 768px) {
+  .driver-cockpit-header {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
+.driver-cockpit-header h2 {
+  color: white;
+  font-size: 1.5rem;
+}
+.driver-cockpit-header .bus-tag {
+  background: rgba(255, 255, 255, 0.15);
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+/* Panel de botones de acción rápida (Requisito 15, 16, 23) */
+.driver-quick-actions {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+  margin-bottom: 20px;
+}
+@media (min-width: 640px) {
+  .driver-quick-actions {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}
+
+.action-card-btn {
+  padding: 16px 12px;
+  border-radius: var(--radius-lg);
+  text-align: center;
+  border: 2px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-weight: 700;
+  box-shadow: var(--shadow-sm);
+  touch-action: manipulation;
+}
+.action-card-btn:active {
+  transform: scale(0.97);
+}
+.action-card-btn .btn-count {
+  font-size: 1.6rem;
+  line-height: 1;
+}
+.action-card-btn .btn-label {
+  font-size: 0.85rem;
+}
+
+.action-board {
+  background: #EFF6FF;
+  border-color: #93C5FD;
+  color: #1D4ED8;
+}
+.action-drop {
+  background: #FEF2F2;
+  border-color: #FCA5A5;
+  color: #B91C1C;
+}
+
+/* Tarjeta de solicitud individual en cabina */
+.driver-req-card {
+  background: white;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border-color);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  box-shadow: var(--shadow-sm);
+}
+.driver-req-card.border-board {
+  border-left: 5px solid #2563EB;
+}
+.driver-req-card.border-drop {
+  border-left: 5px solid #EF4444;
+}
+
+/* Modo simulación */
+.sim-bar {
+  background: #FEF3C7;
+  border: 1px solid #FCD34D;
+  padding: 10px 16px;
+  border-radius: var(--radius-md);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.85rem;
+  color: #92400E;
+}

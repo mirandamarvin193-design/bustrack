@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Registro - BusTrack</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+  <div class="auth-wrapper" style="padding: 30px 16px;">
+    <div class="auth-card" style="max-width: 620px;">
+      
+      <div class="auth-header">
+        <div class="logo-badge">🚌</div>
+        <h1>Crear Cuenta en BusTrack</h1>
+        <p class="text-muted">Únete a la red inteligente de transporte público</p>
+      </div>
+
+      <div id="register-error-alert" class="alert alert-danger" style="display: none;"></div>
+
+      <!-- Selector de Rol (Requisito 4) -->
+      <label style="font-weight: 700; display: block; margin-bottom: 8px;">¿Cómo utilizarás BusTrack?</label>
+      <div class="role-selector">
+        <div class="role-option active" id="tab-role-passenger" onclick="selectRole('passenger')">
+          🙋 PASAJERO
+        </div>
+        <div class="role-option" id="tab-role-driver" onclick="selectRole('driver')">
+          👨‍✈️ CONDUCTOR
+        </div>
+      </div>
+
+      <form id="register-form">
+        <input type="hidden" id="reg-role" value="passenger">
+
+        <!-- 1. Información Personal Común -->
+        <h4 style="margin-bottom: 12px; color: var(--primary);">1. Información Personal</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reg-name">Nombre *</label>
+            <input type="text" id="reg-name" class="form-control" placeholder="Ej: Carlos" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-lastname">Apellido *</label>
+            <input type="text" id="reg-lastname" class="form-control" placeholder="Ej: Mendoza" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reg-email">Correo Electrónico *</label>
+            <input type="email" id="reg-email" class="form-control" placeholder="ejemplo@correo.com" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-birthdate">Fecha de Nacimiento *</label>
+            <input type="date" id="reg-birthdate" class="form-control" required>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="reg-password">Contraseña *</label>
+            <input type="password" id="reg-password" class="form-control" placeholder="Mínimo 4 caracteres" required>
+          </div>
+          <div class="form-group">
+            <label for="reg-confirm-password">Confirmar Contraseña *</label>
+            <input type="password" id="reg-confirm-password" class="form-control" placeholder="Repite la contraseña" required>
+          </div>
+        </div>
+
+        <!-- 2. Campos Específicos para PASAJERO -->
+        <div id="passenger-fields" class="role-fields-container">
+          <div class="role-fields-header">
+            <span>📍 Datos de Pasajero</span>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-city">Provincia o Ciudad:</label>
+              <input type="text" id="reg-city" class="form-control" placeholder="Ej: David, Chiriquí" value="David">
+            </div>
+            <div class="form-group">
+              <label for="reg-zone">Zona o Dirección aproximada:</label>
+              <input type="text" id="reg-zone" class="form-control" placeholder="Ej: San Mateo / Doleguita">
+            </div>
+          </div>
+          <p class="text-muted" style="font-size: 0.8rem;">
+            ℹ️ Por privacidad, no guardamos tu ubicación GPS exacta de forma permanente. Solo se compartirá cuando solicites subir a un bus.
+          </p>
+        </div>
+
+        <!-- 3. Campos Específicos para CONDUCTOR -->
+        <div id="driver-fields" class="role-fields-container" style="display: none;">
+          <div class="role-fields-header">
+            <span>🚌 Datos de Bus y Empresa (Conductor)</span>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-plate">Número de Placa *</label>
+              <input type="text" id="reg-plate" class="form-control" placeholder="Ej: CH-9080">
+            </div>
+            <div class="form-group">
+              <label for="reg-bus-number">Número o Código del Bus *</label>
+              <input type="text" id="reg-bus-number" class="form-control" placeholder="Ej: 008">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-company-name">Nombre de la Empresa *</label>
+              <input type="text" id="reg-company-name" class="form-control" placeholder="Ej: Transportes Chiriquí Metropolitano">
+            </div>
+            <div class="form-group">
+              <label for="reg-route-name">Nombre de la Ruta *</label>
+              <input type="text" id="reg-route-name" class="form-control" placeholder="Ej: Ruta Centro - David">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-start-point">Punto de Inicio:</label>
+              <input type="text" id="reg-start-point" class="form-control" placeholder="Ej: Parque Cervantes">
+            </div>
+            <div class="form-group">
+              <label for="reg-end-point">Punto Final:</label>
+              <input type="text" id="reg-end-point" class="form-control" placeholder="Ej: Terminal David">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-shift-start">Horario Inicio:</label>
+              <input type="text" id="reg-shift-start" class="form-control" placeholder="Ej: 05:30 AM" value="06:00 AM">
+            </div>
+            <div class="form-group">
+              <label for="reg-shift-end">Horario Fin:</label>
+              <input type="text" id="reg-shift-end" class="form-control" placeholder="Ej: 08:30 PM" value="08:00 PM">
+            </div>
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label for="reg-days">Días de Circulación:</label>
+              <input type="text" id="reg-days" class="form-control" placeholder="Ej: Lunes a Sábado" value="Lunes a Sábado">
+            </div>
+            <div class="form-group">
+              <label for="reg-capacity">Capacidad Aprox:</label>
+              <input type="number" id="reg-capacity" class="form-control" placeholder="40" value="40">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="reg-bustype">Tipo de Bus:</label>
+            <select id="reg-bustype" class="form-control">
+              <option value="Autobús Grande">Autobús Grande Urbano</option>
+              <option value="Coaster">Coaster / Microbús</option>
+              <option value="Interprovincial">Autobús Interprovincial</option>
+            </select>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg w-100" id="btn-submit-register">
+          Completar Registro
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        ¿Ya tienes cuenta? <a href="login.html">Inicia sesión aquí</a>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    function selectRole(role) {
+      document.getElementById('reg-role').value = role;
+      const tabPass = document.getElementById('tab-role-passenger');
+      const tabDriver = document.getElementById('tab-role-driver');
+      const passFields = document.getElementById('passenger-fields');
+      const driverFields = document.getElementById('driver-fields');
+
+      if (role === 'passenger') {
+        tabPass.classList.add('active');
+        tabDriver.classList.remove('active');
+        passFields.style.display = 'block';
+        driverFields.style.display = 'none';
+      } else {
+        tabDriver.classList.add('active');
+        tabPass.classList.remove('active');
+        passFields.style.display = 'none';
+        driverFields.style.display = 'block';
+      }
+    }
+
+    document.getElementById('register-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const errEl = document.getElementById('register-error-alert');
+      errEl.style.display = 'none';
+
+      const role = document.getElementById('reg-role').value;
+      const formData = {
+        name: document.getElementById('reg-name').value,
+        lastName: document.getElementById('reg-lastname').value,
+        email: document.getElementById('reg-email').value,
+        birthDate: document.getElementById('reg-birthdate').value,
+        password: document.getElementById('reg-password').value,
+        confirmPassword: document.getElementById('reg-confirm-password').value,
+        role: role,
+        // Pasajero
+        city: document.getElementById('reg-city').value,
+        zone: document.getElementById('reg-zone').value,
+        // Conductor
+        plate: document.getElementById('reg-plate').value,
+        busNumber: document.getElementById('reg-bus-number').value,
+        companyName: document.getElementById('reg-company-name').value,
+        routeName: document.getElementById('reg-route-name').value,
+        startPoint: document.getElementById('reg-start-point').value,
+        endPoint: document.getElementById('reg-end-point').value,
+        shiftStart: document.getElementById('reg-shift-start').value,
+        shiftEnd: document.getElementById('reg-shift-end').value,
+        days: document.getElementById('reg-days').value,
+        capacity: document.getElementById('reg-capacity').value,
+        busType: document.getElementById('reg-bustype').value
+      };
+
+      const result = AuthService.register(formData);
+      if (result.success) {
+        AuthService.redirectByUserRole(result.user);
+      } else {
+        errEl.textContent = result.message;
+        errEl.style.display = 'block';
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+    });
+  </script>
+</body>
+</html>

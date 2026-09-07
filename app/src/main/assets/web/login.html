@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Iniciar Sesión - BusTrack</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+
+  <div class="auth-wrapper">
+    <div class="auth-card">
+      <div class="auth-header">
+        <div class="logo-badge">🚌</div>
+        <h1>Bienvenido a BusTrack</h1>
+        <p class="text-muted">Ingresa a tu cuenta para continuar</p>
+      </div>
+
+      <div id="login-error-alert" class="alert alert-danger" style="display: none;"></div>
+
+      <form id="login-form">
+        <div class="form-group">
+          <label for="login-email">Correo Electrónico:</label>
+          <input type="email" id="login-email" class="form-control" placeholder="ejemplo@correo.com" required>
+        </div>
+
+        <div class="form-group">
+          <label for="login-password">Contraseña:</label>
+          <input type="password" id="login-password" class="form-control" placeholder="••••••••" required>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-lg w-100 mt-3" id="btn-submit-login">
+          Iniciar Sesión
+        </button>
+      </form>
+
+      <div class="auth-footer">
+        ¿Aún no tienes una cuenta? <a href="register.html">Crear cuenta gratis</a>
+      </div>
+
+      <!-- Accesos Rápidos de Prueba (Demo) -->
+      <div class="demo-accounts-box">
+        <div class="demo-accounts-title">⚡ Cuentas de Demostración (1 Clic)</div>
+        <div class="demo-btn-group">
+          <button class="demo-btn" onclick="fillAndLogin('pasajero@bustrack.com', '123')">
+            🙋 Pasajero<br><small>pasajero@bustrack.com</small>
+          </button>
+          <button class="demo-btn" onclick="fillAndLogin('conductor@bustrack.com', '123')">
+            👨‍✈️ Conductor<br><small>conductor@bustrack.com</small>
+          </button>
+          <button class="demo-btn" onclick="fillAndLogin('admin@bustrack.com', 'admin')">
+            ⚙️ Admin<br><small>admin@bustrack.com</small>
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <script src="js/storage.js"></script>
+  <script src="js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Si ya hay usuario activo, redirigir
+      const user = AuthService.getCurrentUser();
+      if (user) {
+        AuthService.redirectByUserRole(user);
+      }
+
+      const form = document.getElementById('login-form');
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        const email = document.getElementById('login-email').value;
+        const pass = document.getElementById('login-password').value;
+        processLogin(email, pass);
+      });
+    });
+
+    function fillAndLogin(email, password) {
+      document.getElementById('login-email').value = email;
+      document.getElementById('login-password').value = password;
+      processLogin(email, password);
+    }
+
+    function processLogin(email, password) {
+      const errEl = document.getElementById('login-error-alert');
+      errEl.style.display = 'none';
+
+      const result = AuthService.login(email, password);
+      if (result.success) {
+        AuthService.redirectByUserRole(result.user);
+      } else {
+        errEl.textContent = result.message;
+        errEl.style.display = 'block';
+      }
+    }
+  </script>
+</body>
+</html>

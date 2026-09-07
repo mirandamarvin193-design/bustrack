@@ -1,0 +1,32 @@
+[
+  {
+    "id": "EMP001",
+    "name": "Transportes Chiriquí Metropolitano",
+    "legalId": "RUC-108291-1",
+    "phone": "+507 775-1020",
+    "email": "contacto@chiriquimetro.com",
+    "office": "Terminal de Transporte David, Local 12",
+    "color": "#2563EB",
+    "active": true
+  },
+  {
+    "id": "EMP002",
+    "name": "Expreso David - Bugaba S.A.",
+    "legalId": "RUC-984421-2",
+    "phone": "+507 770-4450",
+    "email": "info@davidbugaba.com",
+    "office": "Parada Central Bugaba",
+    "color": "#059669",
+    "active": true
+  },
+  {
+    "id": "EMP003",
+    "name": "Trans Boquete Express",
+    "legalId": "RUC-443219-3",
+    "phone": "+507 720-1122",
+    "email": "servicio@transboquete.com",
+    "office": "Terminal David / Parque Boquete",
+    "color": "#D97706",
+    "active": true
+  }
+]

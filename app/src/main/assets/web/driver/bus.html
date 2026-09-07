@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mi Bus - Conductor BusTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <a href="dashboard.html" class="brand-logo">
+      <div class="logo-icon">🚌</div>
+      <span>Mi Unidad de Transporte</span>
+    </a>
+    <a href="dashboard.html" class="btn btn-outline-primary btn-sm">Volver</a>
+  </header>
+
+  <main class="app-container">
+    <div class="card p-3 mb-3">
+      <div class="d-flex justify-between align-center mb-3">
+        <div>
+          <h2 id="bus-num-title">Bus #--</h2>
+          <span class="badge badge-primary" id="bus-plate-title">Placa --</span>
+        </div>
+        <div id="bus-status-badge">
+          <span class="badge badge-success">🟢 En Servicio</span>
+        </div>
+      </div>
+
+      <hr style="border:none; border-top:1px solid var(--border-color); margin:16px 0;">
+
+      <div class="detail-grid mb-3">
+        <div><strong>Tipo de Vehículo:</strong> <span id="b-type">--</span></div>
+        <div><strong>Capacidad Máxima:</strong> <span id="b-cap">--</span> pasajeros</div>
+        <div><strong>Pasajeros a Bordo:</strong> <span id="b-curr">--</span> personas</div>
+        <div><strong>Próxima Parada:</strong> <span id="b-next">--</span></div>
+      </div>
+
+      <h4 class="mt-3 mb-2">Control de Ocupación de Pasajeros</h4>
+      <div class="d-flex gap-2 align-center mb-3">
+        <button class="btn btn-secondary btn-lg" onclick="adjustPassengers(-1)">-1 Pasajero</button>
+        <button class="btn btn-primary btn-lg" onclick="adjustPassengers(1)">+1 Pasajero</button>
+      </div>
+
+      <div class="alert alert-warning">
+        <strong>Consejo de seguridad:</strong> Recuerda marcar tu bus como <strong>LLENO</strong> si la capacidad está copada para no retrasar a los pasajeros que esperan en las siguientes paradas.
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>Cabina</span>
+    </a>
+    <a href="route.html" class="nav-item">
+      <span class="nav-icon">🗺️</span>
+      <span>Mi Ruta</span>
+    </a>
+    <a href="bus.html" class="nav-item active">
+      <span class="nav-icon">🚌</span>
+      <span>Mi Bus</span>
+    </a>
+    <a href="schedule.html" class="nav-item">
+      <span class="nav-icon">🕐</span>
+      <span>Turno</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    let currentBus = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const driver = AuthService.requireAuth(['driver', 'admin']);
+      if (!driver) return;
+
+      const buses = StorageService.getBuses();
+      currentBus = buses.find(b => b.driverId === driver.id) || buses[0];
+      if (!currentBus) return;
+
+      renderBusDetails();
+    });
+
+    function renderBusDetails() {
+      document.getElementById('bus-num-title').textContent = `Bus #${currentBus.busNumber}`;
+      document.getElementById('bus-plate-title').textContent = currentBus.plate || 'Sin placa';
+      document.getElementById('b-type').textContent = currentBus.busType || 'Autobús Estándar';
+      document.getElementById('b-cap').textContent = currentBus.capacity;
+      document.getElementById('b-curr').textContent = currentBus.currentPassengers || 0;
+      document.getElementById('b-next').textContent = currentBus.nextStop || 'En trayecto';
+
+      const statusEl = document.getElementById('bus-status-badge');
+      if (currentBus.isBrokenDown) {
+        statusEl.innerHTML = '<span class="badge badge-danger">🔴 AVERIADO</span>';
+      } else if (currentBus.isFull) {
+        statusEl.innerHTML = '<span class="badge badge-warning">🟡 LLENO</span>';
+      } else {
+        statusEl.innerHTML = '<span class="badge badge-success">🟢 EN SERVICIO</span>';
+      }
+    }
+
+    function adjustPassengers(delta) {
+      if (!currentBus) return;
+      let val = (currentBus.currentPassengers || 0) + delta;
+      if (val < 0) val = 0;
+      if (val > currentBus.capacity) val = currentBus.capacity;
+
+      currentBus.currentPassengers = val;
+      if (val >= currentBus.capacity) {
+        currentBus.isFull = true;
+      }
+      StorageService.saveBus(currentBus);
+      renderBusDetails();
+      NotificationService.toast(`Pasajeros actualizados: ${val}`, 'info', 1500);
+    }
+  </script>
+</body>
+</html>

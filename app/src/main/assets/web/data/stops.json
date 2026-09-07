@@ -1,0 +1,119 @@
+[
+  {
+    "id": "STP001",
+    "routeId": "RUT001",
+    "name": "Parque Miguel de Cervantes",
+    "lat": 8.4273,
+    "lng": -82.4309,
+    "sequence": 1,
+    "isTerminal": true
+  },
+  {
+    "id": "STP002",
+    "routeId": "RUT001",
+    "name": "Parada Calle 4ta Este / Plaza Ote",
+    "lat": 8.4320,
+    "lng": -82.4330,
+    "sequence": 2,
+    "isTerminal": false
+  },
+  {
+    "id": "STP003",
+    "routeId": "RUT001",
+    "name": "Parada Hospital Regional",
+    "lat": 8.4365,
+    "lng": -82.4350,
+    "sequence": 3,
+    "isTerminal": false
+  },
+  {
+    "id": "STP004",
+    "routeId": "RUT001",
+    "name": "Parada Centro Comercial Doleguita",
+    "lat": 8.4410,
+    "lng": -82.4380,
+    "sequence": 4,
+    "isTerminal": false
+  },
+  {
+    "id": "STP005",
+    "routeId": "RUT001",
+    "name": "Terminal de Transporte David",
+    "lat": 8.4485,
+    "lng": -82.4430,
+    "sequence": 5,
+    "isTerminal": true
+  },
+  {
+    "id": "STP006",
+    "routeId": "RUT002",
+    "name": "Terminal David (Andén Bugaba)",
+    "lat": 8.4485,
+    "lng": -82.4430,
+    "sequence": 1,
+    "isTerminal": true
+  },
+  {
+    "id": "STP007",
+    "routeId": "RUT002",
+    "name": "Cruce San Pablo",
+    "lat": 8.4620,
+    "lng": -82.4900,
+    "sequence": 2,
+    "isTerminal": false
+  },
+  {
+    "id": "STP008",
+    "routeId": "RUT002",
+    "name": "Entrada Alanje - Panamericana",
+    "lat": 8.4710,
+    "lng": -82.5200,
+    "sequence": 3,
+    "isTerminal": false
+  },
+  {
+    "id": "STP009",
+    "routeId": "RUT002",
+    "name": "Parque Central La Concepción (Bugaba)",
+    "lat": 8.4840,
+    "lng": -82.6100,
+    "sequence": 4,
+    "isTerminal": true
+  },
+  {
+    "id": "STP010",
+    "routeId": "RUT003",
+    "name": "Terminal David (Andén Boquete)",
+    "lat": 8.4485,
+    "lng": -82.4430,
+    "sequence": 1,
+    "isTerminal": true
+  },
+  {
+    "id": "STP011",
+    "routeId": "RUT003",
+    "name": "Parada Los Algarrobos",
+    "lat": 8.5300,
+    "lng": -82.4320,
+    "sequence": 2,
+    "isTerminal": false
+  },
+  {
+    "id": "STP012",
+    "routeId": "RUT003",
+    "name": "Parada Caldera Cruce",
+    "lat": 8.6200,
+    "lng": -82.4370,
+    "sequence": 3,
+    "isTerminal": false
+  },
+  {
+    "id": "STP013",
+    "routeId": "RUT003",
+    "name": "Parque Central Bajo Boquete",
+    "lat": 8.7770,
+    "lng": -82.4390,
+    "sequence": 4,
+    "isTerminal": true
+  }
+]

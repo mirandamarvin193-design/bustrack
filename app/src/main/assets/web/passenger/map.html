@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mapa Completo - BusTrack</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/passenger.css">
+  <style>
+    .fullscreen-map-wrapper {
+      position: fixed;
+      top: var(--header-height);
+      bottom: var(--bottom-nav-height);
+      left: 0;
+      right: 0;
+      z-index: 10;
+    }
+    #full-passenger-map {
+      width: 100%;
+      height: 100%;
+    }
+    .floating-map-controls {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      right: 16px;
+      z-index: 500;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
+    }
+    .floating-map-controls > * {
+      pointer-events: auto;
+    }
+    .floating-search {
+      background: white;
+      border-radius: var(--radius-full);
+      box-shadow: var(--shadow-lg);
+      padding: 4px 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Cabecera -->
+  <header class="app-header">
+    <a href="dashboard.html" class="brand-logo">
+      <div class="logo-icon">🚌</div>
+      <span>BusTrack</span>
+    </a>
+    <div class="d-flex align-center gap-2">
+      <button class="btn btn-outline-primary btn-sm" onclick="locateUserGPS()">📍 Mi Ubicación</button>
+    </div>
+  </header>
+
+  <!-- Mapa a Pantalla Completa -->
+  <div class="fullscreen-map-wrapper">
+    <div class="floating-map-controls">
+      <div class="floating-search">
+        <input type="text" id="floating-bus-search" class="form-control" style="border:none; box-shadow:none; padding:8px 0;" placeholder="🔍 Buscar ruta o bus...">
+      </div>
+    </div>
+    <div id="full-passenger-map"></div>
+  </div>
+
+  <!-- Navegación Inferior -->
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>Inicio</span>
+    </a>
+    <a href="map.html" class="nav-item active">
+      <span class="nav-icon">🗺️</span>
+      <span>Mapa</span>
+    </a>
+    <a href="buses.html" class="nav-item">
+      <span class="nav-icon">🚌</span>
+      <span>Buses</span>
+    </a>
+    <a href="schedules.html" class="nav-item">
+      <span class="nav-icon">🕐</span>
+      <span>Horarios</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/gps.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/map.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/passenger.js"></script>
+  <script>
+    let fullMap = null;
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = AuthService.requireAuth(['passenger', 'admin']);
+      if (!user) return;
+
+      fullMap = new BusTrackMap('full-passenger-map');
+      if (fullMap.init()) {
+        const buses = StorageService.getBuses();
+        const routes = StorageService.getRoutes();
+        const stops = StorageService.getStops();
+        const requests = StorageService.getRequests().filter(r => r.status === 'active');
+
+        fullMap.renderRoutes(routes);
+        fullMap.renderStops(stops);
+        fullMap.renderBuses(buses);
+        fullMap.renderRequests(requests);
+
+        // Actualización periódica
+        setInterval(() => {
+          const freshBuses = StorageService.getBuses();
+          const freshRequests = StorageService.getRequests().filter(r => r.status === 'active');
+          fullMap.renderBuses(freshBuses);
+          fullMap.renderRequests(freshRequests);
+        }, 3000);
+      }
+
+      locateUserGPS();
+
+      document.getElementById('floating-bus-search').addEventListener('input', (e) => {
+        const q = e.target.value.toLowerCase().trim();
+        const buses = StorageService.getBuses().filter(b => b.busNumber.includes(q) || (b.plate && b.plate.toLowerCase().includes(q)));
+        fullMap.renderBuses(buses);
+      });
+    });
+
+    function locateUserGPS() {
+      GPSService.getCurrentPosition()
+        .then(pos => {
+          if (fullMap) {
+            fullMap.updateUserLocation(pos.lat, pos.lng, pos.accuracy);
+            fullMap.setView(pos.lat, pos.lng, 15);
+          }
+        })
+        .catch(err => {
+          NotificationService.toast(err.message, 'warning');
+        });
+    }
+  </script>
+</body>
+</html>

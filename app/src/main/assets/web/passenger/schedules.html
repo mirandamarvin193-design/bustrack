@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Horarios de Rutas - BusTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/passenger.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <a href="dashboard.html" class="brand-logo">
+      <div class="logo-icon">🚌</div>
+      <span>BusTrack</span>
+    </a>
+    <div class="d-flex align-center gap-2">
+      <a href="dashboard.html" class="btn btn-outline-primary btn-sm">Volver</a>
+    </div>
+  </header>
+
+  <main class="app-container">
+    <div class="mb-3">
+      <h2>Horarios y Frecuencias</h2>
+      <p class="text-muted">Consulta los horarios de salida y frecuencia de cada ruta</p>
+    </div>
+
+    <div id="schedules-container" style="display: flex; flex-direction: column; gap: 16px;"></div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>Inicio</span>
+    </a>
+    <a href="map.html" class="nav-item">
+      <span class="nav-icon">🗺️</span>
+      <span>Mapa</span>
+    </a>
+    <a href="buses.html" class="nav-item">
+      <span class="nav-icon">🚌</span>
+      <span>Buses</span>
+    </a>
+    <a href="schedules.html" class="nav-item active">
+      <span class="nav-icon">🕐</span>
+      <span>Horarios</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = AuthService.requireAuth(['passenger', 'admin']);
+      if (!user) return;
+
+      const container = document.getElementById('schedules-container');
+      const routes = StorageService.getRoutes();
+      const companies = StorageService.getCompanies();
+
+      container.innerHTML = routes.map(route => {
+        const comp = companies.find(c => c.id === route.companyId);
+        const stops = StorageService.getStopsByRoute(route.id);
+
+        return `
+          <div class="card p-3">
+            <div class="d-flex justify-between align-center mb-2">
+              <div>
+                <span class="badge badge-primary">${route.code}</span>
+                <h3 style="display:inline; margin-left:6px;">${route.name}</h3>
+              </div>
+              <span class="text-muted" style="font-size:0.85rem;">🏢 ${comp ? comp.name : 'Empresa'}</span>
+            </div>
+
+            <div class="detail-grid mb-3 mt-3">
+              <div><strong>⏰ Horario:</strong> ${route.schedule}</div>
+              <div><strong>📅 Días:</strong> ${route.days}</div>
+              <div><strong>⏱️ Tiempo estimado:</strong> ${route.estimatedDuration}</div>
+              <div><strong>🚏 Paradas en ruta:</strong> ${stops.length} paradas</div>
+            </div>
+
+            <p style="font-size:0.85rem; margin-bottom: 6px;">
+              <strong>Recorrido:</strong> ${route.startPoint} ➔ ${route.endPoint}
+            </p>
+
+            <div class="table-responsive mt-3">
+              <table class="data-table">
+                <thead>
+                  <tr>
+                    <th>Secuencia</th>
+                    <th>Nombre de la Parada</th>
+                    <th>Tipo</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${stops.map(s => `
+                    <tr>
+                      <td>#${s.sequence}</td>
+                      <td>🚏 ${s.name}</td>
+                      <td>${s.isTerminal ? '<span class="badge badge-info">Terminal</span>' : 'Parada regular'}</td>
+                    </tr>
+                  `).join('')}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        `;
+      }).join('');
+    });
+  </script>
+</body>
+</html>

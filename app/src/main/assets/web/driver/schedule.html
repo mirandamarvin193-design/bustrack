@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mi Turno de Trabajo - BusTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <a href="dashboard.html" class="brand-logo">
+      <div class="logo-icon">🚌</div>
+      <span>Turno y Horario</span>
+    </a>
+    <a href="dashboard.html" class="btn btn-outline-primary btn-sm">Volver</a>
+  </header>
+
+  <main class="app-container">
+    <div class="card p-3 mb-3">
+      <h2>Programación de Turno</h2>
+      <p class="text-muted">Horas de inicio, finalización y vueltas asignadas</p>
+
+      <div class="detail-grid mt-3 mb-3">
+        <div><strong>Inicio de Turno:</strong> <span id="s-start">06:00 AM</span></div>
+        <div><strong>Fin de Turno:</strong> <span id="s-end">08:00 PM</span></div>
+        <div><strong>Días laborales:</strong> <span id="s-days">Lunes a Sábado</span></div>
+        <div><strong>Vueltas programadas:</strong> <span id="s-trips">6 recorridos/día</span></div>
+      </div>
+
+      <div class="alert alert-info">
+        <strong>Puntualidad en parada:</strong> Mantén encendido el GPS durante todo tu turno para que los pasajeros puedan calcular con certeza tu hora de llegada.
+      </div>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>Cabina</span>
+    </a>
+    <a href="route.html" class="nav-item">
+      <span class="nav-icon">🗺️</span>
+      <span>Mi Ruta</span>
+    </a>
+    <a href="bus.html" class="nav-item">
+      <span class="nav-icon">🚌</span>
+      <span>Mi Bus</span>
+    </a>
+    <a href="schedule.html" class="nav-item active">
+      <span class="nav-icon">🕐</span>
+      <span>Turno</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const driver = AuthService.requireAuth(['driver', 'admin']);
+      if (!driver) return;
+
+      const schedules = StorageService.getSchedules();
+      const sched = schedules.find(s => s.driverId === driver.id) || schedules[0];
+      if (sched) {
+        document.getElementById('s-start').textContent = sched.shiftStart;
+        document.getElementById('s-end').textContent = sched.shiftEnd;
+        document.getElementById('s-days').textContent = sched.days;
+        document.getElementById('s-trips').textContent = `${sched.roundTripsPerDay} recorridos/día`;
+      }
+    });
+  </script>
+</body>
+</html>

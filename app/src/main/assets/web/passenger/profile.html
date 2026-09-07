@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Mi Perfil - BusTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <a href="dashboard.html" class="brand-logo">
+      <div class="logo-icon">🚌</div>
+      <span>BusTrack</span>
+    </a>
+    <button class="btn btn-outline-danger btn-sm" onclick="AuthService.logout()">Cerrar Sesión</button>
+  </header>
+
+  <main class="app-container">
+    <div class="card p-3 mb-3">
+      <div class="d-flex align-center gap-3 mb-3">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: #EFF6FF; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+          👤
+        </div>
+        <div>
+          <h2 id="prof-fullname">Usuario</h2>
+          <span class="badge badge-primary">PASAJERO</span>
+        </div>
+      </div>
+
+      <hr style="border:none; border-top:1px solid var(--border-color); margin:16px 0;">
+
+      <div class="detail-grid mb-3">
+        <div><strong>Correo:</strong> <span id="prof-email">--</span></div>
+        <div><strong>Ciudad:</strong> <span id="prof-city">--</span></div>
+        <div><strong>Zona:</strong> <span id="prof-zone">--</span></div>
+        <div><strong>Fecha Nacimiento:</strong> <span id="prof-birth">--</span></div>
+      </div>
+
+      <div class="alert alert-info">
+        <strong>🔒 Privacidad y Datos:</strong> Tu ubicación GPS solo se transmite en vivo al conductor cuando mantienes activa una solicitud de parada. Al completar o cancelar la parada, tu posición deja de compartirse.
+      </div>
+
+      <button class="btn btn-danger w-100 mt-3" onclick="AuthService.logout()">
+        Cerrar Sesión
+      </button>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>Inicio</span>
+    </a>
+    <a href="map.html" class="nav-item">
+      <span class="nav-icon">🗺️</span>
+      <span>Mapa</span>
+    </a>
+    <a href="buses.html" class="nav-item">
+      <span class="nav-icon">🚌</span>
+      <span>Buses</span>
+    </a>
+    <a href="schedules.html" class="nav-item">
+      <span class="nav-icon">🕐</span>
+      <span>Horarios</span>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <span class="nav-icon">👤</span>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const user = AuthService.requireAuth(['passenger', 'admin']);
+      if (!user) return;
+
+      document.getElementById('prof-fullname').textContent = `${user.name} ${user.lastName || ''}`;
+      document.getElementById('prof-email').textContent = user.email;
+      document.getElementById('prof-city').textContent = user.city || 'No especificada';
+      document.getElementById('prof-zone').textContent = user.zone || 'No especificada';
+      document.getElementById('prof-birth').textContent = user.birthDate || '--';
+    });
+  </script>
+</body>
+</html>

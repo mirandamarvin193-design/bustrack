@@ -1,0 +1,50 @@
+[
+  {
+    "id": "SCH001",
+    "routeId": "RUT001",
+    "companyId": "EMP001",
+    "busId": "BUS001",
+    "driverId": "USR_COND1",
+    "departureTime": "06:00 AM",
+    "shiftStart": "05:30 AM",
+    "shiftEnd": "02:00 PM",
+    "days": "Lunes, Martes, Miércoles, Jueves, Viernes",
+    "roundTripsPerDay": 8
+  },
+  {
+    "id": "SCH002",
+    "routeId": "RUT001",
+    "companyId": "EMP001",
+    "busId": "BUS002",
+    "driverId": "USR_COND2",
+    "departureTime": "06:30 AM",
+    "shiftStart": "06:00 AM",
+    "shiftEnd": "02:30 PM",
+    "days": "Lunes a Sábado",
+    "roundTripsPerDay": 8
+  },
+  {
+    "id": "SCH003",
+    "routeId": "RUT002",
+    "companyId": "EMP002",
+    "busId": "BUS003",
+    "driverId": "USR_COND3",
+    "departureTime": "06:00 AM",
+    "shiftStart": "05:30 AM",
+    "shiftEnd": "03:00 PM",
+    "days": "Lunes a Domingo",
+    "roundTripsPerDay": 6
+  },
+  {
+    "id": "SCH004",
+    "routeId": "RUT003",
+    "companyId": "EMP003",
+    "busId": "BUS005",
+    "driverId": null,
+    "departureTime": "07:00 AM",
+    "shiftStart": "06:30 AM",
+    "shiftEnd": "04:00 PM",
+    "days": "Lunes a Domingo",
+    "roundTripsPerDay": 5
+  }
+]

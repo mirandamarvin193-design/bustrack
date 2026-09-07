@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Perfil de Conductor - BusTrack</title>
+  <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+
+  <header class="app-header">
+    <a href="dashboard.html" class="brand-logo">
+      <div class="logo-icon">🚌</div>
+      <span>Perfil Conductor</span>
+    </a>
+    <button class="btn btn-outline-danger btn-sm" onclick="AuthService.logout()">Cerrar Sesión</button>
+  </header>
+
+  <main class="app-container">
+    <div class="card p-3 mb-3">
+      <div class="d-flex align-center gap-3 mb-3">
+        <div style="width: 60px; height: 60px; border-radius: 50%; background: #EFF6FF; color: var(--primary); display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+          👨‍✈️
+        </div>
+        <div>
+          <h2 id="dprof-fullname">Conductor</h2>
+          <span class="badge badge-primary">CONDUCTOR AUTORIZADO</span>
+        </div>
+      </div>
+
+      <hr style="border:none; border-top:1px solid var(--border-color); margin:16px 0;">
+
+      <div class="detail-grid mb-3">
+        <div><strong>Correo:</strong> <span id="dprof-email">--</span></div>
+        <div><strong>Empresa:</strong> <span id="dprof-company">--</span></div>
+        <div><strong>Fecha Nacimiento:</strong> <span id="dprof-birth">--</span></div>
+        <div><strong>Bus Asignado:</strong> <span id="dprof-bus">--</span></div>
+      </div>
+
+      <div class="alert alert-info">
+        <strong>Aislamiento de Empresa:</strong> Tu sesión únicamente muestra y comparte telemetría con buses y pasajeros asociados a tu empresa y ruta asignada.
+      </div>
+
+      <button class="btn btn-danger w-100 mt-3" onclick="AuthService.logout()">
+        Cerrar Sesión
+      </button>
+    </div>
+  </main>
+
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item">
+      <span class="nav-icon">🏠</span>
+      <span>Cabina</span>
+    </a>
+    <a href="route.html" class="nav-item">
+      <span class="nav-icon">🗺️</span>
+      <span>Mi Ruta</span>
+    </a>
+    <a href="bus.html" class="nav-item">
+      <span class="nav-icon">🚌</span>
+      <span>Mi Bus</span>
+    </a>
+    <a href="schedule.html" class="nav-item">
+      <span class="nav-icon">🕐</span>
+      <span>Turno</span>
+    </a>
+    <a href="profile.html" class="nav-item active">
+      <span class="nav-icon">👤</span>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
+  <script src="../js/storage.js"></script>
+  <script src="../js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const driver = AuthService.requireAuth(['driver', 'admin']);
+      if (!driver) return;
+
+      document.getElementById('dprof-fullname').textContent = `${driver.name} ${driver.lastName || ''}`;
+      document.getElementById('dprof-email').textContent = driver.email;
+      document.getElementById('dprof-birth').textContent = driver.birthDate || '--';
+
+      const company = StorageService.getCompanyById(driver.companyId);
+      document.getElementById('dprof-company').textContent = company ? company.name : 'Transportes Chiriquí Metropolitano';
+
+      const bus = StorageService.getBusById(driver.busId);
+      document.getElementById('dprof-bus').textContent = bus ? `Bus #${bus.busNumber} (${bus.plate})` : 'Bus #001';
+    });
+  </script>
+</body>
+</html>

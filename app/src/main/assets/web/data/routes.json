@@ -1,0 +1,69 @@
+[
+  {
+    "id": "RUT001",
+    "name": "Ruta Centro - Terminal David",
+    "code": "R-101",
+    "companyId": "EMP001",
+    "startPoint": "Parque Miguel de Cervantes",
+    "endPoint": "Terminal de Transporte David",
+    "estimatedDuration": "25 min",
+    "days": "Lunes a Domingo",
+    "schedule": "05:30 AM - 09:30 PM",
+    "frequency": "Cada 15 min",
+    "color": "#2563EB",
+    "active": true,
+    "path": [
+      [8.4273, -82.4309],
+      [8.4290, -82.4315],
+      [8.4320, -82.4330],
+      [8.4365, -82.4350],
+      [8.4410, -82.4380],
+      [8.4450, -82.4415],
+      [8.4485, -82.4430]
+    ]
+  },
+  {
+    "id": "RUT002",
+    "name": "Ruta David - Bugaba Interprovincial",
+    "code": "R-202",
+    "companyId": "EMP002",
+    "startPoint": "Terminal David",
+    "endPoint": "Parque Central de La Concepción (Bugaba)",
+    "estimatedDuration": "40 min",
+    "days": "Lunes a Sábado",
+    "schedule": "05:00 AM - 10:00 PM",
+    "frequency": "Cada 20 min",
+    "color": "#059669",
+    "active": true,
+    "path": [
+      [8.4485, -82.4430],
+      [8.4550, -82.4600],
+      [8.4620, -82.4900],
+      [8.4710, -82.5200],
+      [8.4790, -82.5700],
+      [8.4840, -82.6100]
+    ]
+  },
+  {
+    "id": "RUT003",
+    "name": "Ruta David - Boquete Montaña",
+    "code": "R-303",
+    "companyId": "EMP003",
+    "startPoint": "Terminal David",
+    "endPoint": "Bajo Boquete (Parque Domingo Médica)",
+    "estimatedDuration": "50 min",
+    "days": "Lunes a Domingo",
+    "schedule": "06:00 AM - 08:30 PM",
+    "frequency": "Cada 30 min",
+    "color": "#D97706",
+    "active": true,
+    "path": [
+      [8.4485, -82.4430],
+      [8.4800, -82.4350],
+      [8.5300, -82.4320],
+      [8.6200, -82.4370],
+      [8.7300, -82.4350],
+      [8.7770, -82.4390]
+    ]
+  }
+]

@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Panel de Pasajero - BusTrack</title>
+  
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  
+  <link rel="stylesheet" href="../css/style.css">
+  <link rel="stylesheet" href="../css/passenger.css">
+</head>
+<body>
+
+  <!-- Cabecera de la App -->
+  <header class="app-header">
+    <a href="dashboard.html" class="brand-logo">
+      <div class="logo-icon">🚌</div>
+      <span>BusTrack</span>
+    </a>
+    <div class="d-flex align-center gap-3">
+      <span class="text-muted" style="font-size:0.85rem;" id="user-display-name">Pasajero</span>
+      <button class="btn btn-outline-danger btn-sm" onclick="AuthService.logout()">Salir</button>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <main class="app-container">
+
+    <!-- Hero / Buscador -->
+    <div class="passenger-hero">
+      <h2>¿Qué bus estás buscando?</h2>
+      <p>Encuentra rutas, paradas y buses en tiempo real en tu ciudad</p>
+      <div class="search-box-wrapper">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="bus-search-input" class="form-control" placeholder="Buscar por empresa, ruta, bus o placa...">
+      </div>
+    </div>
+
+    <!-- Filtro de Empresa -->
+    <div class="d-flex justify-between align-center mb-3">
+      <h4>Buses en Circulación</h4>
+      <div style="min-width: 180px;">
+        <select id="company-filter" class="form-control" style="padding: 6px 12px; font-size: 0.85rem;">
+          <option value="">Todas las empresas</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- Tarjeta de Solicitud Activa (Aparece cuando el pasajero pide parada) -->
+    <div id="active-request-tracker" style="display: none;"></div>
+
+    <!-- Mapa en Vivo -->
+    <div class="map-card-wrapper">
+      <div class="map-header">
+        <strong>🗺️ Mapa en Tiempo Real</strong>
+        <div class="map-legend">
+          <span>🟢 Circulando</span>
+          <span>🟡 Lleno</span>
+          <span>🔴 Averiado</span>
+          <span>🔵 Subir</span>
+          <span>🔴 Bajar</span>
+        </div>
+      </div>
+      <div id="passenger-map"></div>
+    </div>
+
+    <!-- Lista de Buses Cercanos -->
+    <h3 class="mb-3">Autobuses Disponibles</h3>
+    <div id="buses-list-container" class="buses-grid">
+      <!-- Generado dinámicamente por passenger.js -->
+    </div>
+
+  </main>
+
+  <!-- Navegación Inferior Móvil (Requisito 21) -->
+  <nav class="bottom-nav">
+    <a href="dashboard.html" class="nav-item active">
+      <span class="nav-icon">🏠</span>
+      <span>Inicio</span>
+    </a>
+    <a href="map.html" class="nav-item">
+      <span class="nav-icon">🗺️</span>
+      <span>Mapa</span>
+    </a>
+    <a href="buses.html" class="nav-item">
+      <span class="nav-icon">🚌</span>
+      <span>Buses</span>
+    </a>
+    <a href="schedules.html" class="nav-item">
+      <span class="nav-icon">🕐</span>
+      <span>Horarios</span>
+    </a>
+    <a href="profile.html" class="nav-item">
+      <span class="nav-icon">👤</span>
+      <span>Perfil</span>
+    </a>
+  </nav>
+
+  <!-- Leaflet JS -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+  
+  <!-- Scripts de la aplicación -->
+  <script src="../js/storage.js"></script>
+  <script src="../js/gps.js"></script>
+  <script src="../js/notifications.js"></script>
+  <script src="../js/map.js"></script>
+  <script src="../js/auth.js"></script>
+  <script src="../js/passenger.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      initPassengerDashboard();
+    });
+  </script>
+</body>
+</html>
