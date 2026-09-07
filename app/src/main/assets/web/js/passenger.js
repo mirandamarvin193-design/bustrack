@@ -68,9 +68,6 @@ function initPassengerDashboard() {
       renderBusesList(searchInput ? searchInput.value : '');
     });
   }
-
-  // Diálogo de explicación de permisos y audio
-  NotificationService.requestPermissionsDialog();
 }
 
 function initGPS() {

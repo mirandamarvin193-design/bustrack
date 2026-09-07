@@ -166,34 +166,34 @@ const NotificationService = {
   },
 
   /**
-   * Muestra modal solicitando activación de audio y GPS
+   * Inicializa el audio automáticamente en el primer toque del usuario (sin bloquear pantalla)
+   */
+  setupAutoAudioUnlock() {
+    const unlock = () => {
+      this.initAudio();
+    };
+    window.addEventListener('click', unlock, { once: true, passive: true });
+    window.addEventListener('touchstart', unlock, { once: true, passive: true });
+  },
+
+  /**
+   * No bloquea la pantalla. El audio se activa automáticamente al interactuar.
    */
   requestPermissionsDialog() {
-    if (localStorage.getItem('bustrack_permissions_explained')) return;
-
-    const modal = document.createElement('div');
-    modal.className = 'modal-backdrop';
-    modal.id = 'perm-modal';
-    modal.innerHTML = `
-      <div class="modal-card">
-        <div class="modal-icon">🔊 📍</div>
-        <h3>Alertas sonoras y GPS</h3>
-        <p>BusTrack utiliza el <strong>GPS de tu dispositivo</strong> y <strong>alertas sonoras</strong> para avisarte cuando el bus esté a 50 metros de tu parada o solicitud.</p>
-        <p class="text-muted" style="font-size: 0.85rem;">Para escuchar los avisos sonoros de aproximación, por favor pulsa "Activar Alertas".</p>
-        <div class="modal-actions">
-          <button class="btn btn-primary" id="btn-enable-alerts">Activar Alertas y Audio</button>
-        </div>
-      </div>
-    `;
-    document.body.appendChild(modal);
-
-    document.getElementById('btn-enable-alerts').addEventListener('click', () => {
-      this.initAudio();
-      this.playStopAlert();
-      localStorage.setItem('bustrack_permissions_explained', 'true');
-      modal.remove();
-    });
+    this.setupAutoAudioUnlock();
   }
 };
+
+// Permitir cerrar cualquier modal al hacer clic en el fondo oscuro
+document.addEventListener('click', (e) => {
+  if (e.target && e.target.classList && e.target.classList.contains('modal-backdrop')) {
+    e.target.remove();
+  }
+});
+
+// Inicializar desbloqueo de audio silencioso al cargar
+document.addEventListener('DOMContentLoaded', () => {
+  NotificationService.setupAutoAudioUnlock();
+});
 
 window.NotificationService = NotificationService;

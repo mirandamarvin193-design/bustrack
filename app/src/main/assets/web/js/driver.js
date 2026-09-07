@@ -54,9 +54,6 @@ function initDriverDashboard() {
     refreshDriverData();
     checkDriverProximityAlerts();
   }, 3000);
-
-  // Solicitar audio y GPS
-  NotificationService.requestPermissionsDialog();
 }
 
 function loadDriverContext() {
