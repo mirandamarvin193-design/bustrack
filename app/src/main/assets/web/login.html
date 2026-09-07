@@ -39,22 +39,6 @@
         ¿Aún no tienes una cuenta? <a href="register.html">Crear cuenta gratis</a>
       </div>
 
-      <!-- Accesos Rápidos de Prueba (Demo) -->
-      <div class="demo-accounts-box">
-        <div class="demo-accounts-title">⚡ Cuentas de Demostración (1 Clic)</div>
-        <div class="demo-btn-group">
-          <button class="demo-btn" onclick="fillAndLogin('pasajero@bustrack.com', '123')">
-            🙋 Pasajero<br><small>pasajero@bustrack.com</small>
-          </button>
-          <button class="demo-btn" onclick="fillAndLogin('conductor@bustrack.com', '123')">
-            👨‍✈️ Conductor<br><small>conductor@bustrack.com</small>
-          </button>
-          <button class="demo-btn" onclick="fillAndLogin('admin@bustrack.com', 'admin')">
-            ⚙️ Admin<br><small>admin@bustrack.com</small>
-          </button>
-        </div>
-      </div>
-
     </div>
   </div>
 
@@ -76,12 +60,6 @@
         processLogin(email, pass);
       });
     });
-
-    function fillAndLogin(email, password) {
-      document.getElementById('login-email').value = email;
-      document.getElementById('login-password').value = password;
-      processLogin(email, password);
-    }
 
     function processLogin(email, password) {
       const errEl = document.getElementById('login-error-alert');

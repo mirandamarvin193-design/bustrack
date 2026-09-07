@@ -166,10 +166,10 @@ const AuthService = {
         status: 'circulating',
         isFull: false,
         isBrokenDown: false,
-        lat: 8.4350,
-        lng: -82.4350,
+        lat: null,
+        lng: null,
         heading: 0,
-        nextStop: 'Inicio de ruta',
+        nextStop: 'Iniciando turno',
         lastUpdate: new Date().toISOString()
       });
 

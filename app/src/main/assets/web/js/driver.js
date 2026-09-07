@@ -59,7 +59,30 @@ function initDriverDashboard() {
 function loadDriverContext() {
   const buses = StorageService.getBuses();
   // Buscar bus asignado al conductor
-  driverBus = buses.find(b => b.driverId === currentDriver.id) || buses.find(b => b.companyId === currentDriver.companyId) || buses[0];
+  driverBus = buses.find(b => b.driverId === currentDriver.id);
+
+  if (!driverBus && currentDriver.role === 'driver') {
+    // Si aún no tiene bus creado, crear su unidad de trabajo real
+    driverBus = StorageService.saveBus({
+      busNumber: currentDriver.busNumber || '01',
+      plate: currentDriver.plate || 'PART-01',
+      companyId: currentDriver.companyId || 'EMP001',
+      routeId: currentDriver.routeId || 'RUT001',
+      driverId: currentDriver.id,
+      driverName: `${currentDriver.name} ${currentDriver.lastName || ''}`,
+      busType: 'Autobús',
+      capacity: 40,
+      currentPassengers: 0,
+      status: 'circulating',
+      isFull: false,
+      isBrokenDown: false,
+      lat: null,
+      lng: null,
+      heading: 0,
+      nextStop: 'En servicio',
+      lastUpdate: new Date().toISOString()
+    });
+  }
 
   if (driverBus) {
     driverCompany = StorageService.getCompanyById(driverBus.companyId);
@@ -121,11 +144,9 @@ function initDriverGPS() {
       }
     });
 
-  // Monitoreo continuo GPS
+  // Monitoreo continuo GPS en tiempo real
   GPSService.startWatching(pos => {
-    if (!simulationMode) {
-      updateDriverPosition(pos.lat, pos.lng, pos.heading || 0);
-    }
+    updateDriverPosition(pos.lat, pos.lng, pos.heading || 0);
   });
 }
 
@@ -332,23 +353,7 @@ function checkDriverProximityAlerts() {
   }
 }
 
-/**
- * Simulador de avance de ruta (útil para pruebas en escritorio/emulador)
- */
-function advanceRouteSimulation() {
-  simulationMode = true;
-  if (!driverRoute || !driverRoute.path || driverRoute.path.length === 0) return;
-
-  currentWaypointIndex = (currentWaypointIndex + 1) % driverRoute.path.length;
-  const pt = driverRoute.path[currentWaypointIndex];
-
-  updateDriverPosition(pt[0], pt[1], 45);
-  NotificationService.toast(`Avanzando en ruta (Punto ${currentWaypointIndex + 1}/${driverRoute.path.length})`, 'info', 2000);
-  refreshDriverData();
-}
-
 window.initDriverDashboard = initDriverDashboard;
 window.toggleBusFull = toggleBusFull;
 window.toggleBusBreakdown = toggleBusBreakdown;
 window.completePassengerRequest = completePassengerRequest;
-window.advanceRouteSimulation = advanceRouteSimulation;

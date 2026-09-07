@@ -84,6 +84,8 @@ class BusTrackMap {
     } else {
       this.userLocationMarker = L.marker([lat, lng], { icon: userIcon, zIndexOffset: 1000 }).addTo(this.map);
       this.userLocationMarker.bindPopup('<b>Tu ubicación actual (GPS)</b>');
+      // Centrar el mapa directamente en la ubicación GPS real del usuario
+      this.map.setView([lat, lng], 16);
     }
 
     if (accuracy && accuracy > 0 && accuracy < 500) {

@@ -45,12 +45,10 @@
       </div>
     </div>
 
-    <!-- Barra de Simulación (Para pruebas sin vehículo en movimiento) -->
-    <div class="sim-bar">
-      <span>📍 <strong>Modo GPS:</strong> Transmitiendo coordenadas en vivo.</span>
-      <button class="btn btn-sm btn-secondary" onclick="advanceRouteSimulation()">
-        ⏩ Avanzar en Ruta (Prueba)
-      </button>
+    <!-- Estado GPS en Vivo Real -->
+    <div class="sim-bar" style="background: #EFF6FF; border: 1px solid #BFDBFE; color: #1E40AF;">
+      <span>📡 <strong>GPS del Bus:</strong> Transmitiendo tu ubicación real a los pasajeros</span>
+      <span class="badge badge-success" id="gps-live-badge">🟢 Activo</span>
     </div>
 
     <!-- Contadores de Pasajeros en Espera (Requisitos 15 y 16) -->

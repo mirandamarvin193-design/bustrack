@@ -76,6 +76,7 @@ function initGPS() {
       currentGpsPos = pos;
       if (passengerMap) {
         passengerMap.updateUserLocation(pos.lat, pos.lng, pos.accuracy);
+        passengerMap.setView(pos.lat, pos.lng, 16);
       }
       renderBusesList(); // Reordenar por cercanía
     })
