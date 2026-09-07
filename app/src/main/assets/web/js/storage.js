@@ -32,10 +32,42 @@ const DEFAULT_SEED_DATA = {
 const StorageService = {
   /**
    * Inicializa la base de datos local con datos semilla si no existen
+   * y conecta con Firebase Realtime Database
    */
   init() {
     if (!localStorage.getItem(STORAGE_KEYS.INITIALIZED)) {
       this.resetToDefaults();
+    }
+    if (window.FirebaseService) {
+      window.FirebaseService.init(this);
+    }
+  },
+
+  /**
+   * Recibe datos actualizados desde Firebase Cloud en tiempo real
+   */
+  syncFromCloud(entityName, cloudData) {
+    if (!entityName || !Array.isArray(cloudData)) return;
+
+    let storageKey = null;
+    switch (entityName) {
+      case 'buses': storageKey = STORAGE_KEYS.BUSES; break;
+      case 'requests': storageKey = STORAGE_KEYS.REQUESTS; break;
+      case 'users': storageKey = STORAGE_KEYS.USERS; break;
+      case 'routes': storageKey = STORAGE_KEYS.ROUTES; break;
+      case 'stops': storageKey = STORAGE_KEYS.STOPS; break;
+      case 'companies': storageKey = STORAGE_KEYS.COMPANIES; break;
+      case 'incidents': storageKey = STORAGE_KEYS.INCIDENTS; break;
+      case 'schedules': storageKey = STORAGE_KEYS.SCHEDULES; break;
+    }
+
+    if (storageKey) {
+      try {
+        localStorage.setItem(storageKey, JSON.stringify(cloudData));
+        this.notifyChange(entityName);
+      } catch (e) {
+        console.error(`Error syncing ${entityName} from cloud:`, e);
+      }
     }
   },
 
@@ -73,6 +105,11 @@ const StorageService = {
     try {
       localStorage.setItem(key, JSON.stringify(val));
       this.notifyChange(entityName);
+
+      // Sincronizar automáticamente en la nube con Firebase
+      if (entityName && entityName !== 'session' && window.FirebaseService) {
+        window.FirebaseService.pushEntity(entityName, val);
+      }
     } catch (e) {
       console.error(`Error writing ${key}:`, e);
     }
@@ -255,7 +292,11 @@ const StorageService = {
 
   // Actualizar ubicación de bus
   updateBusLocation(busId, lat, lng, heading = 0) {
-    return this.updateBus(busId, { lat, lng, heading });
+    const updated = this.updateBus(busId, { lat, lng, heading });
+    if (window.FirebaseService) {
+      window.FirebaseService.updateRecord('buses', busId, { lat, lng, heading, lastUpdate: new Date().toISOString() });
+    }
+    return updated;
   },
 
   // ================= SCHEDULES =================
@@ -311,6 +352,9 @@ const StorageService = {
     };
     list.push(newReq);
     this._set(STORAGE_KEYS.REQUESTS, list, 'requests');
+    if (window.FirebaseService) {
+      window.FirebaseService.setRecord('requests', newReq.id, newReq);
+    }
     return newReq;
   },
   updateRequestLocation(requestId, lat, lng) {
@@ -321,6 +365,9 @@ const StorageService = {
       req.lng = lng;
       req.updatedAt = new Date().toISOString();
       this._set(STORAGE_KEYS.REQUESTS, list, 'requests');
+      if (window.FirebaseService) {
+        window.FirebaseService.updateRecord('requests', requestId, { lat, lng, updatedAt: req.updatedAt });
+      }
     }
   },
   completeRequest(requestId) {
@@ -330,6 +377,9 @@ const StorageService = {
       req.status = 'completed';
       req.completedAt = new Date().toISOString();
       this._set(STORAGE_KEYS.REQUESTS, list, 'requests');
+      if (window.FirebaseService) {
+        window.FirebaseService.updateRecord('requests', requestId, { status: 'completed', completedAt: req.completedAt });
+      }
     }
   },
   cancelRequest(requestId) {
@@ -339,6 +389,9 @@ const StorageService = {
       req.status = 'cancelled';
       req.cancelledAt = new Date().toISOString();
       this._set(STORAGE_KEYS.REQUESTS, list, 'requests');
+      if (window.FirebaseService) {
+        window.FirebaseService.updateRecord('requests', requestId, { status: 'cancelled', cancelledAt: req.cancelledAt });
+      }
     }
   },
 
