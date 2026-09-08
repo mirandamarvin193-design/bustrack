@@ -132,23 +132,35 @@ const StorageService = {
   saveUser(user) {
     const users = this.getUsers();
     if (!user.id) user.id = 'USR_' + Date.now();
-    users.push(user);
+    
+    // Proteger y ofuscar contraseñas sensibles criptográficamente antes de guardar
+    const safeUser = (window.SecurityService && typeof window.SecurityService.protectUserData === 'function')
+      ? window.SecurityService.protectUserData(user)
+      : user;
+
+    users.push(safeUser);
     this._set(STORAGE_KEYS.USERS, users, 'users');
-    // Envío directo inmediato a Firebase Cloud para garantizar persistencia del nuevo usuario
+    // Envío directo inmediato a Firebase Cloud para garantizar persistencia del nuevo usuario con contraseña encriptada
     if (window.FirebaseService && typeof window.FirebaseService.setRecord === 'function') {
-      window.FirebaseService.setRecord('users', user.id, user);
+      window.FirebaseService.setRecord('users', safeUser.id, safeUser);
     }
-    return user;
+    return safeUser;
   },
   updateUser(id, updates) {
     const users = this.getUsers();
     const idx = users.findIndex(u => u.id === id);
     if (idx !== -1) {
-      users[idx] = { ...users[idx], ...updates };
+      // Proteger contraseña si viene en el update
+      let safeUpdates = { ...updates };
+      if (safeUpdates.password && window.SecurityService) {
+        safeUpdates = window.SecurityService.protectUserData(safeUpdates);
+      }
+
+      users[idx] = { ...users[idx], ...safeUpdates };
       this._set(STORAGE_KEYS.USERS, users, 'users');
       // Actualización directa inmediata a Firebase Cloud
       if (window.FirebaseService && typeof window.FirebaseService.updateRecord === 'function') {
-        window.FirebaseService.updateRecord('users', id, updates);
+        window.FirebaseService.updateRecord('users', id, safeUpdates);
       }
       return users[idx];
     }

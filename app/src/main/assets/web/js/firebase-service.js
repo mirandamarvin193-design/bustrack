@@ -62,10 +62,8 @@ const FirebaseService = {
       this.reconnect();
     });
 
-    // Crear o vincular el badge de estado en la cabecera si existe el DOM
-    setTimeout(() => {
-      this.renderStatusBadge();
-    }, 500);
+    // Conexión silenciosa en segundo plano sin botones visuales molestos
+    // (Renderizado de badge desactivado a petición del usuario)
   },
 
   /**
@@ -157,7 +155,12 @@ const FirebaseService = {
       payload = {};
       data.forEach(item => {
         if (item && item.id) {
-          payload[item.id] = item;
+          let cleanItem = item;
+          // Sanitizar y proteger contraseñas antes de enviar a Firebase Cloud
+          if (entityName === 'users' && window.SecurityService) {
+            cleanItem = window.SecurityService.protectUserData(item);
+          }
+          payload[item.id] = cleanItem;
         }
       });
     }
@@ -182,17 +185,22 @@ const FirebaseService = {
   updateRecord(entityName, recordId, updates) {
     if (this.isSyncingFromCloud || !recordId) return;
 
+    let safeUpdates = updates;
+    if (entityName === 'users' && safeUpdates && window.SecurityService) {
+      safeUpdates = window.SecurityService.protectUserData(safeUpdates);
+    }
+
     if (this.db) {
-      this.db.ref(`bustrack/${entityName}/${recordId}`).update(updates)
+      this.db.ref(`bustrack/${entityName}/${recordId}`).update(safeUpdates)
         .then(() => {
           this.status.lastSync = new Date();
         })
         .catch(err => {
           console.warn(`Error al actualizar ${entityName}/${recordId} en Firebase SDK:`, err);
-          this.patchRest(`${entityName}/${recordId}`, updates);
+          this.patchRest(`${entityName}/${recordId}`, safeUpdates);
         });
     } else {
-      this.patchRest(`${entityName}/${recordId}`, updates);
+      this.patchRest(`${entityName}/${recordId}`, safeUpdates);
     }
   },
 
@@ -202,17 +210,22 @@ const FirebaseService = {
   setRecord(entityName, recordId, fullRecord) {
     if (this.isSyncingFromCloud || !recordId) return;
 
+    let safeRecord = fullRecord;
+    if (entityName === 'users' && safeRecord && window.SecurityService) {
+      safeRecord = window.SecurityService.protectUserData(safeRecord);
+    }
+
     if (this.db) {
-      this.db.ref(`bustrack/${entityName}/${recordId}`).set(fullRecord)
+      this.db.ref(`bustrack/${entityName}/${recordId}`).set(safeRecord)
         .then(() => {
           this.status.lastSync = new Date();
         })
         .catch(err => {
           console.warn(`Error al insertar ${entityName}/${recordId} en Firebase:`, err);
-          this.sendRest(`${entityName}/${recordId}`, fullRecord);
+          this.sendRest(`${entityName}/${recordId}`, safeRecord);
         });
     } else {
-      this.sendRest(`${entityName}/${recordId}`, fullRecord);
+      this.sendRest(`${entityName}/${recordId}`, safeRecord);
     }
   },
 
@@ -345,59 +358,17 @@ const FirebaseService = {
   },
 
   /**
-   * Inserta el botón / badge de estado de Firebase en la interfaz
+   * Métodos visuales desactivados a petición del usuario
+   * (La sincronización con Firebase funciona 100% en segundo plano sin botones ni indicadores en pantalla)
    */
   renderStatusBadge() {
-    // Buscar el header de la aplicación
-    const header = document.querySelector('.app-header') || document.querySelector('header');
-    if (!header || document.getElementById('firebase-cloud-badge')) return;
-
-    const badgeContainer = document.createElement('div');
-    badgeContainer.id = 'firebase-cloud-badge';
-    badgeContainer.style.cursor = 'pointer';
-    badgeContainer.style.display = 'inline-flex';
-    badgeContainer.style.alignItems = 'center';
-    badgeContainer.style.gap = '6px';
-    badgeContainer.style.fontSize = '0.78rem';
-    badgeContainer.style.fontWeight = '600';
-    badgeContainer.style.padding = '4px 10px';
-    badgeContainer.style.borderRadius = '20px';
-    badgeContainer.style.transition = 'all 0.2s';
-    badgeContainer.style.border = '1px solid #E2E8F0';
-    badgeContainer.style.background = '#FFFFFF';
-    badgeContainer.onclick = () => this.openSettingsModal();
-
-    // Insertar en el header
-    const actionsWrapper = header.querySelector('.d-flex.align-center') || header;
-    if (actionsWrapper !== header) {
-      actionsWrapper.insertBefore(badgeContainer, actionsWrapper.firstChild);
-    } else {
-      header.appendChild(badgeContainer);
-    }
-
-    this.updateStatusBadgeDOM();
+    // No mostrar botones ni badges de Firebase en la interfaz
+    const el = document.getElementById('firebase-cloud-badge');
+    if (el) el.remove();
   },
 
-  /**
-   * Actualiza los colores y texto del badge de Firebase
-   */
   updateStatusBadgeDOM() {
-    const el = document.getElementById('firebase-cloud-badge');
-    if (!el) return;
-
-    if (this.status.connected) {
-      el.style.background = '#ECFDF5';
-      el.style.borderColor = '#A7F3D0';
-      el.style.color = '#065F46';
-      el.innerHTML = `<span>🔥</span><span>Firebase: En Vivo</span>`;
-      el.title = `${this.status.message} (Conectado a bustrack-gps)`;
-    } else {
-      el.style.background = '#EFF6FF';
-      el.style.borderColor = '#BFDBFE';
-      el.style.color = '#1D4ED8';
-      el.innerHTML = `<span>🔥</span><span>Firebase: bustrack-gps</span>`;
-      el.title = "Proyecto bustrack-gps configurado en la app";
-    }
+    // No-op
   },
 
   /**

@@ -19,12 +19,6 @@
         <p class="text-muted">Tu transporte público conectado en tiempo real</p>
       </div>
 
-      <div style="display:flex; justify-content:center; margin-bottom: 14px;">
-        <button type="button" onclick="FirebaseService.openSettingsModal()" style="background:#F8FAFC; border:1px solid #CBD5E1; padding:5px 12px; border-radius:20px; font-size:0.75rem; color:#475569; display:inline-flex; align-items:center; gap:6px; cursor:pointer;" id="login-fb-btn">
-          <span>🔥</span> <span>Base de Datos: <strong>Firebase Cloud</strong></span>
-        </button>
-      </div>
-
       <div id="login-error-alert" class="alert alert-danger" style="display: none;"></div>
 
       <form id="login-form">
@@ -53,6 +47,7 @@
   <!-- Firebase Cloud SDK & Services -->
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="js/security.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/firebase-service.js"></script>
   <script src="js/storage.js"></script>

@@ -23,8 +23,23 @@ const AuthService = {
       return { success: false, message: 'Usuario no encontrado con ese correo electrónico.' };
     }
 
-    if (user.password !== password) {
+    // Verificación de contraseña segura (soporta hashes y compatibilidad)
+    let passwordMatches = false;
+    if (window.SecurityService && typeof window.SecurityService.verifyPassword === 'function') {
+      passwordMatches = window.SecurityService.verifyPassword(password, user.password);
+    } else {
+      passwordMatches = (user.password === password);
+    }
+
+    if (!passwordMatches) {
       return { success: false, message: 'Contraseña incorrecta. Por favor verifica tus datos.' };
+    }
+
+    // Si el usuario tenía contraseña antigua en plano, la migramos automáticamente a hash protegido
+    if (window.SecurityService && user.password && !user.password.startsWith('hash_')) {
+      const secureHash = window.SecurityService.hashPasswordSync(password);
+      user.password = secureHash;
+      StorageService.updateUser(user.id, { password: secureHash });
     }
 
     // Guardar sesión activa
@@ -102,13 +117,18 @@ const AuthService = {
     }
 
     const userId = 'USR_' + Date.now();
+    // Proteger y encriptar contraseña inmediatamente
+    const hashedPassword = (window.SecurityService && typeof window.SecurityService.hashPasswordSync === 'function')
+      ? window.SecurityService.hashPasswordSync(password)
+      : password;
+
     const newUser = {
       id: userId,
       name: name.trim(),
       lastName: lastName.trim(),
       email: email.trim().toLowerCase(),
       birthDate,
-      password,
+      password: hashedPassword,
       role,
       createdAt: new Date().toISOString()
     };
