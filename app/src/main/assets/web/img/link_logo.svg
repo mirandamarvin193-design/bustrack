@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="100%" height="100%">
+  <!-- Fondo blanco limpio -->
+  <rect width="1024" height="1024" fill="#FFFFFF"/>
+  
+  <!-- Letra L (Sección Superior con corte diagonal en bisel) -->
+  <!-- Azul eléctrico vibrante #0056F6 -->
+  <path d="M 226 360 C 226 270 290 208 404 208 L 404 532 L 226 648 Z" fill="#0056F6" />
+  
+  <!-- Letra L (Base inferior con ángulo afilado y curva redondeada) -->
+  <path d="M 404 554 L 344 670 L 480 670 C 545 670 600 725 600 790 C 600 805 595 815 585 815 L 344 815 C 275 815 226 766 226 695 C 226 675 235 655 245 640 Z" fill="#0056F6" />
+
+  <!-- Punto de la 'i' (Círculo cian brillante #00A6FF) -->
+  <circle cx="692" cy="326" r="90" fill="#00A6FF" />
+
+  <!-- Cuerpo de la 'i' (Columna vertical con base redondeada y curva aerodinámica en la izquierda) -->
+  <path d="M 602 418 L 768 418 L 768 690 C 768 760 720 816 685 816 C 650 816 602 760 602 690 Z" fill="#00A6FF" />
+</svg>

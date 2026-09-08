@@ -1,5 +1,5 @@
 {
-  "name": "BusTrack",
+  "name": "Link",
   "description": "Seguimiento de buses públicos en tiempo real con mapas, rutas, paradas, alertas y roles para pasajeros, conductores y empresas.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]

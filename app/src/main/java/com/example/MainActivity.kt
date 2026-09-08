@@ -14,8 +14,10 @@ import androidx.activity.OnBackPressedCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.contract.ActivityResultContracts
+import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeDrawingPadding
+import androidx.compose.ui.graphics.Color as ComposeColor
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -55,11 +57,14 @@ class MainActivity : ComponentActivity() {
 
     setContent {
       MyApplicationTheme {
-        Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+        Scaffold(
+            modifier = Modifier.fillMaxSize(),
+            containerColor = ComposeColor(0xFF0F172A)
+        ) { _ ->
           BusTrackWebView(
               modifier = Modifier
                   .fillMaxSize()
-                  .padding(innerPadding),
+                  .safeDrawingPadding(),
               onWebViewCreated = { webView -> appWebView = webView })
         }
       }
@@ -88,6 +93,7 @@ fun BusTrackWebView(modifier: Modifier = Modifier, onWebViewCreated: (WebView) -
       modifier = modifier,
       factory = { context ->
         WebView(context).apply {
+          setBackgroundColor(AndroidColor.parseColor("#0F172A"))
           settings.apply {
             javaScriptEnabled = true
             domStorageEnabled = true

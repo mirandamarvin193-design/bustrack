@@ -3,25 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Registro - BusTrack</title>
+  <title>Registro - Link</title>
   <link rel="stylesheet" href="css/style.css">
   <link rel="stylesheet" href="css/login.css">
 </head>
-<body>
+<body class="auth-body">
 
   <div class="auth-wrapper" style="padding: 30px 16px;">
     <div class="auth-card" style="max-width: 620px;">
       
       <div class="auth-header">
-        <div class="logo-badge">🚌</div>
-        <h1>Crear Cuenta en BusTrack</h1>
+        <div style="display: flex; justify-content: center; margin-bottom: 12px;">
+          <img src="img/link_logo.png" alt="Link Logo" style="width: 72px; height: 72px; object-fit: contain; border-radius: 12px;">
+        </div>
+        <h1>Crear Cuenta en Link</h1>
         <p class="text-muted">Únete a la red inteligente de transporte público</p>
       </div>
 
       <div id="register-error-alert" class="alert alert-danger" style="display: none;"></div>
 
       <!-- Selector de Rol (Requisito 4) -->
-      <label style="font-weight: 700; display: block; margin-bottom: 8px;">¿Cómo utilizarás BusTrack?</label>
+      <label style="font-weight: 700; display: block; margin-bottom: 8px;">¿Cómo utilizarás Link?</label>
       <div class="role-selector">
         <div class="role-option active" id="tab-role-passenger" onclick="selectRole('passenger')">
           🙋 PASAJERO

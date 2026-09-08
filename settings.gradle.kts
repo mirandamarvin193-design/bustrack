@@ -22,6 +22,6 @@ dependencyResolutionManagement {
   }
 }
 
-rootProject.name = "BusTrack"
+rootProject.name = "Link"
 
 include(":app")

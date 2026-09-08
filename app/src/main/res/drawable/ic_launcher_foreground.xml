@@ -3,6 +3,6 @@
     <item
         android:width="66dp"
         android:height="66dp"
-        android:drawable="@drawable/bustrack_icon_1788794239606"
+        android:drawable="@drawable/link_logo"
         android:gravity="center" />
 </layer-list>

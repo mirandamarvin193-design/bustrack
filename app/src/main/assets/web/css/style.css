@@ -80,10 +80,18 @@ p { font-size: 0.95rem; }
   display: flex;
   align-items: center;
   gap: 8px;
-  font-size: 1.25rem;
+  font-size: 1.3rem;
   font-weight: 800;
   color: var(--primary);
   text-decoration: none;
+  letter-spacing: -0.5px;
+}
+.brand-logo img.logo-img {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  object-fit: contain;
+  box-shadow: 0 2px 6px rgba(0,102,255,0.2);
 }
 .brand-logo .logo-icon {
   background: linear-gradient(135deg, var(--primary), #3B82F6);
