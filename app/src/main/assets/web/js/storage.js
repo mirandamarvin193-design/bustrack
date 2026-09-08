@@ -63,7 +63,17 @@ const StorageService = {
 
     if (storageKey) {
       try {
-        localStorage.setItem(storageKey, JSON.stringify(cloudData));
+        if (entityName === 'users') {
+          // Merge inteligente para no perder usuarios si la nube aún no tiene todos
+          const current = this.getUsers();
+          const map = new Map();
+          current.forEach(u => { if (u && u.id) map.set(u.id, u); });
+          cloudData.forEach(u => { if (u && u.id) map.set(u.id, { ...map.get(u.id), ...u }); });
+          const merged = Array.from(map.values());
+          localStorage.setItem(storageKey, JSON.stringify(merged));
+        } else {
+          localStorage.setItem(storageKey, JSON.stringify(cloudData));
+        }
         this.notifyChange(entityName);
       } catch (e) {
         console.error(`Error syncing ${entityName} from cloud:`, e);
@@ -124,6 +134,10 @@ const StorageService = {
     if (!user.id) user.id = 'USR_' + Date.now();
     users.push(user);
     this._set(STORAGE_KEYS.USERS, users, 'users');
+    // Envío directo inmediato a Firebase Cloud para garantizar persistencia del nuevo usuario
+    if (window.FirebaseService && typeof window.FirebaseService.setRecord === 'function') {
+      window.FirebaseService.setRecord('users', user.id, user);
+    }
     return user;
   },
   updateUser(id, updates) {
@@ -132,6 +146,10 @@ const StorageService = {
     if (idx !== -1) {
       users[idx] = { ...users[idx], ...updates };
       this._set(STORAGE_KEYS.USERS, users, 'users');
+      // Actualización directa inmediata a Firebase Cloud
+      if (window.FirebaseService && typeof window.FirebaseService.updateRecord === 'function') {
+        window.FirebaseService.updateRecord('users', id, updates);
+      }
       return users[idx];
     }
     return null;

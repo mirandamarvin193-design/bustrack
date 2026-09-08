@@ -224,7 +224,7 @@ const FirebaseService = {
     if (!config || !config.databaseURL) return;
 
     const base = config.databaseURL.replace(/\/$/, '');
-    const url = `${base}/bustrack/${path}.json${config.apiKey ? `?auth=${config.apiKey}` : ''}`;
+    const url = `${base}/bustrack/${path}.json`;
 
     fetch(url, {
       method: 'PUT',
@@ -244,7 +244,7 @@ const FirebaseService = {
     if (!config || !config.databaseURL) return;
 
     const base = config.databaseURL.replace(/\/$/, '');
-    const url = `${base}/bustrack/${path}.json${config.apiKey ? `?auth=${config.apiKey}` : ''}`;
+    const url = `${base}/bustrack/${path}.json`;
 
     fetch(url, {
       method: 'PATCH',
@@ -274,7 +274,37 @@ const FirebaseService = {
     fetch(url)
       .then(r => r.json())
       .then(data => {
-        if (data && this.storageService && typeof this.storageService.syncFromCloud === 'function') {
+        if (data === null) {
+          // La base de datos en Firebase está recién creada (null).
+          // Inicializamos la estructura en la nube enviando los datos locales o un nodo de bienvenida
+          if (this.storageService) {
+            console.log("🔥 Base de datos en la nube vacía. Inicializando nodo bustrack en Firebase...");
+            const users = this.storageService.getUsers ? this.storageService.getUsers() : [];
+            const buses = this.storageService.getBuses ? this.storageService.getBuses() : [];
+            const routes = this.storageService.getRoutes ? this.storageService.getRoutes() : [];
+            
+            const initialCloudPayload = {
+              status: "active",
+              appName: "BusTrack",
+              initializedAt: new Date().toISOString(),
+              users: {},
+              buses: {},
+              routes: {}
+            };
+            
+            users.forEach(u => { if (u && u.id) initialCloudPayload.users[u.id] = u; });
+            buses.forEach(b => { if (b && b.id) initialCloudPayload.buses[b.id] = b; });
+            routes.forEach(rt => { if (rt && rt.id) initialCloudPayload.routes[rt.id] = rt; });
+            
+            fetch(url, {
+              method: 'PUT',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(initialCloudPayload)
+            }).then(() => {
+              this.updateStatus(true, 'rest', 'Conectado a Firebase (Base de datos inicializada)');
+            }).catch(e => console.warn("Error al inicializar Firebase:", e));
+          }
+        } else if (data && this.storageService && typeof this.storageService.syncFromCloud === 'function') {
           this.isSyncingFromCloud = true;
           Object.keys(data).forEach(entity => {
             const raw = data[entity];
